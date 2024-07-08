@@ -51,9 +51,11 @@ def game_loop():
     foodx = round(random.randrange(0, display_width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, display_height - snake_block) / 10.0) * 10.0
 
-    while not game_over:
+    # Logic for when the snake game is active
+    while not game_close:
 
-        while game_close == True:
+        # Logic for when the game is over
+        while game_over == True:
             dis.fill(blue)
             message('You Lost! Press "esc" to quit or "c" to play again', red)
             pygame.display.update()
@@ -67,6 +69,7 @@ def game_loop():
                         game_loop()
                         return
 
+        # Key press actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_close = True
@@ -86,12 +89,15 @@ def game_loop():
                 elif event.key == pygame.K_ESCAPE:
                     game_close = True
         
+        # Game over if the snake collides with the borders of the display
         if x1 >= display_width or x1 < 0 or y1 >= display_height or y1 < 0:
-            game_close = True
+            game_over = True
 
+        # Update the location of the snake
         x1 += x1_change
         y1 += y1_change
 
+        # Draw the display
         dis.fill(black)
         pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
 
@@ -103,20 +109,24 @@ def game_loop():
         if len(snake_list) > len_of_snake:
             del snake_list[0]
 
+        # End the game if the snake collides with itself
         for x in snake_list[:-1]:
             if x == snake_head:
                 game_over = True
         
+        # Draw the snake
         for x in snake_list:
             pygame.draw.rect(dis, white, [x[0], x[1], snake_block, snake_block])
 
         pygame.display.update()
 
+        # Spawn a new piece of food
         if x1 == foodx and y1 == foody:
             foodx = round(random.randrange(0, display_width - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, display_height - snake_block) / 10.0) * 10.0
             len_of_snake += 1
 
+        # Add a tick using snake speed
         clock.tick(snake_speed)
 
 
